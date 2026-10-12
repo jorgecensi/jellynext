@@ -162,6 +162,7 @@ After authorization, configure what to sync for each user:
 **Watchlist Sync Options:**
 - ☐ **Sync Watchlist Movies**: Automatically add watchlisted movies to your download system
 - ☐ **Sync Watchlist Shows**: Automatically add watchlisted shows to your download system
+- ☑ **Add to Watchlist When Download Fails**: If a download request fails (for example Radarr/Sonarr is offline), the item is added to your Trakt watchlist instead. Combined with the sync options above, it is downloaded automatically once the download system is back
 
 **Recommendation Limits:**
 - **Movie Recommendations Limit**: Number of movie recommendations to fetch (1-100, default: 50)

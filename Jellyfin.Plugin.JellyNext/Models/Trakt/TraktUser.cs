@@ -84,6 +84,12 @@ public class TraktUser
     public bool SyncWatchlistShows { get; set; } = false;
 
     /// <summary>
+    /// Gets or sets a value indicating whether to add an item to the Trakt watchlist when its download request fails
+    /// (for example because Radarr/Sonarr is offline).
+    /// </summary>
+    public bool AddToWatchlistOnDownloadFailure { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets the set of movie TMDB IDs that have been processed from the watchlist.
     /// Used to avoid re-adding the same items on subsequent syncs.
     /// </summary>

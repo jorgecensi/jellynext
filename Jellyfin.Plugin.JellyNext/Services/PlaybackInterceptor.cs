@@ -29,6 +29,7 @@ public class PlaybackInterceptor : IHostedService
     private readonly ContentCacheService _cacheService;
     private readonly IUserDataManager _userDataManager;
     private readonly IUserManager _userManager;
+    private readonly TraktApi _traktApi;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlaybackInterceptor"/> class.
@@ -39,14 +40,17 @@ public class PlaybackInterceptor : IHostedService
     /// <param name="cacheService">The content cache service.</param>
     /// <param name="userDataManager">The user data manager.</param>
     /// <param name="userManager">The user manager.</param>
+    /// <param name="traktApi">The Trakt API service.</param>
     public PlaybackInterceptor(
         ILogger<PlaybackInterceptor> logger,
         ISessionManager sessionManager,
         DownloadProviderFactory downloadProviderFactory,
         ContentCacheService cacheService,
         IUserDataManager userDataManager,
-        IUserManager userManager)
+        IUserManager userManager,
+        TraktApi traktApi)
     {
+        _traktApi = traktApi;
         _logger = logger;
         _sessionManager = sessionManager;
         _downloadProviderFactory = downloadProviderFactory;
@@ -246,8 +250,9 @@ public class PlaybackInterceptor : IHostedService
         // Get the appropriate download provider and request the movie
         var downloadProvider = _downloadProviderFactory.GetProvider();
         var result = await downloadProvider.RequestMovieAsync(contentItem, playerId.ToString());
+        var message = result.Success ? result.Message : await TryAddToWatchlist(contentItem, playerId) ?? result.Message;
 
-        await SendUserNotification(e.Session?.Id, result.Message);
+        await SendUserNotification(e.Session?.Id, message);
     }
 
     private async Task HandleShowDownload(PlaybackProgressEventArgs e, Guid contentOwnerId, Guid playerId)
@@ -307,8 +312,44 @@ public class PlaybackInterceptor : IHostedService
         // Get the appropriate download provider and request the show
         var downloadProvider = _downloadProviderFactory.GetProvider();
         var result = await downloadProvider.RequestShowAsync(contentItem, seasonNumber, playerId.ToString(), isAnime);
+        var message = result.Success ? result.Message : await TryAddToWatchlist(contentItem, playerId) ?? result.Message;
 
-        await SendUserNotification(e.Session?.Id, result.Message);
+        await SendUserNotification(e.Session?.Id, message);
+    }
+
+    // Fallback for a failed download request: saves the item to the player's Trakt watchlist.
+    // Returns the message to show the user, or null if the item was not added.
+    private async Task<string?> TryAddToWatchlist(ContentItem contentItem, Guid playerId)
+    {
+        var traktUser = Helpers.UserHelper.GetTraktUser(playerId, true);
+        if (traktUser == null || !traktUser.AddToWatchlistOnDownloadFailure)
+        {
+            return null;
+        }
+
+        try
+        {
+            if (!await _traktApi.AddToWatchlist(traktUser, contentItem))
+            {
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding {Title} to Trakt watchlist after failed download", contentItem.Title);
+            return null;
+        }
+
+        _logger.LogInformation(
+            "Download request failed, added {Title} ({Year}) to Trakt watchlist for user {UserId}",
+            contentItem.Title,
+            contentItem.Year,
+            playerId);
+
+        var autoDownload = contentItem.Type == ContentType.Movie ? traktUser.SyncWatchlistMovies : traktUser.SyncWatchlistShows;
+        return autoDownload
+            ? $"Download system unavailable. {contentItem.Title} ({contentItem.Year}) was added to your Trakt watchlist and will be downloaded automatically once it is back online."
+            : $"Download system unavailable. {contentItem.Title} ({contentItem.Year}) was added to your Trakt watchlist instead.";
     }
 
     private bool DetectAnime(ContentItem item)

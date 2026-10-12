@@ -133,6 +133,7 @@ function loadUserSettings() {
         document.getElementById('UserSyncNextSeasons').checked = settings.syncNextSeasons !== false;
         document.getElementById('UserSyncWatchlistMovies').checked = settings.syncWatchlistMovies === true;
         document.getElementById('UserSyncWatchlistShows').checked = settings.syncWatchlistShows === true;
+        document.getElementById('UserAddToWatchlistOnDownloadFailure').checked = settings.addToWatchlistOnDownloadFailure !== false;
         document.getElementById('UserIgnoreCollected').checked = settings.ignoreCollected !== false;
         document.getElementById('UserIgnoreWatchlisted').checked = settings.ignoreWatchlisted === true;
         document.getElementById('UserLimitShowsToSeasonOne').checked = settings.limitShowsToSeasonOne !== false;
@@ -181,6 +182,7 @@ function saveUserTraktSettings(userGuid) {
         syncNextSeasons: document.getElementById('UserSyncNextSeasons').checked,
         syncWatchlistMovies: document.getElementById('UserSyncWatchlistMovies').checked,
         syncWatchlistShows: document.getElementById('UserSyncWatchlistShows').checked,
+        addToWatchlistOnDownloadFailure: document.getElementById('UserAddToWatchlistOnDownloadFailure').checked,
         ignoreCollected: document.getElementById('UserIgnoreCollected').checked,
         ignoreWatchlisted: document.getElementById('UserIgnoreWatchlisted').checked,
         limitShowsToSeasonOne: document.getElementById('UserLimitShowsToSeasonOne').checked,

@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.4.2.0
+
+### Features
+
+- **Watchlist fallback for failed downloads**: When playing a virtual item and the download request fails (for example Radarr/Sonarr is offline), the item is added to the player's Trakt watchlist instead
+  - New per-user setting `AddToWatchlistOnDownloadFailure` (enabled by default) in the Trakt user settings tab
+  - With watchlist sync enabled, the item is downloaded automatically once the download system is reachable again
+  - Applies to all download modes (Native, Jellyseerr, Webhook); shows are added to the watchlist as a whole show
+
 ## v1.4.1.0
 
 ### Bug Fixes

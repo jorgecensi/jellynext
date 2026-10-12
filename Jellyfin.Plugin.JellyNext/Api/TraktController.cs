@@ -153,6 +153,7 @@ public class TraktController : ControllerBase
             syncNextSeasons = traktUser.SyncNextSeasons,
             syncWatchlistMovies = traktUser.SyncWatchlistMovies,
             syncWatchlistShows = traktUser.SyncWatchlistShows,
+            addToWatchlistOnDownloadFailure = traktUser.AddToWatchlistOnDownloadFailure,
             ignoreCollected = traktUser.IgnoreCollected,
             ignoreWatchlisted = traktUser.IgnoreWatchlisted,
             limitShowsToSeasonOne = traktUser.LimitShowsToSeasonOne,
@@ -184,6 +185,7 @@ public class TraktController : ControllerBase
         traktUser.SyncNextSeasons = settings.SyncNextSeasons;
         traktUser.SyncWatchlistMovies = settings.SyncWatchlistMovies;
         traktUser.SyncWatchlistShows = settings.SyncWatchlistShows;
+        traktUser.AddToWatchlistOnDownloadFailure = settings.AddToWatchlistOnDownloadFailure;
         traktUser.IgnoreCollected = settings.IgnoreCollected;
         traktUser.IgnoreWatchlisted = settings.IgnoreWatchlisted;
         traktUser.LimitShowsToSeasonOne = settings.LimitShowsToSeasonOne;
@@ -251,5 +253,10 @@ public class TraktController : ControllerBase
         /// Gets or sets a value indicating whether to automatically add watchlisted shows to download system.
         /// </summary>
         public bool SyncWatchlistShows { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to add an item to the Trakt watchlist when its download request fails.
+        /// </summary>
+        public bool AddToWatchlistOnDownloadFailure { get; set; } = true;
     }
 }

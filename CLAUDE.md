@@ -266,6 +266,11 @@ Implement `IContentProvider` + register in `PluginServiceRegistrator` → automa
 - **Throttling**: 1 second delay between downloads to avoid overwhelming download systems
 - **Error handling**: Individual item failures logged, don't stop entire sync process
 
+### Watchlist Fallback (Failed Downloads)
+- `PlaybackInterceptor` adds the item to the **player's** Trakt watchlist (not the content owner's) via `TraktApi.AddToWatchlist()` when `DownloadResult.Success` is false and the user's `AddToWatchlistOnDownloadFailure` is on (default: true)
+- Triggers on **any** failed request, not only connection errors - Radarr/Sonarr services return null for every failure, so "offline" cannot be told apart from misconfiguration
+- Only in the playback path: `WatchlistSyncService` must not use it (items are already on the watchlist). Watchlist sync re-requests every watchlisted item that is not yet in the library on each run, so it doubles as the retry queue
+
 ### Shows Cache (Season-Level)
 - **Purpose**: Hybrid caching system with global show/season metadata + per-user watch progress tracking
 - **Architecture**:

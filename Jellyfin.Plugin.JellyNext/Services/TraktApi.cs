@@ -458,6 +458,75 @@ public class TraktApi
     }
 
     /// <summary>
+    /// Adds a movie or show to the user's Trakt watchlist.
+    /// </summary>
+    /// <param name="traktUser">The Trakt user configuration.</param>
+    /// <param name="contentItem">The movie or show to add.</param>
+    /// <returns>True if the item is on the watchlist afterwards (added or already present).</returns>
+    public async Task<bool> AddToWatchlist(TraktUser traktUser, ContentItem contentItem)
+    {
+        var ids = new Dictionary<string, object>();
+        if (contentItem.TraktId > 0)
+        {
+            ids["trakt"] = contentItem.TraktId;
+        }
+
+        if (contentItem.TmdbId.HasValue)
+        {
+            ids["tmdb"] = contentItem.TmdbId.Value;
+        }
+
+        if (contentItem.TvdbId.HasValue)
+        {
+            ids["tvdb"] = contentItem.TvdbId.Value;
+        }
+
+        if (!string.IsNullOrEmpty(contentItem.ImdbId))
+        {
+            ids["imdb"] = contentItem.ImdbId;
+        }
+
+        if (ids.Count == 0)
+        {
+            _logger.LogWarning("Cannot add {Title} to Trakt watchlist: no IDs available", contentItem.Title);
+            return false;
+        }
+
+        var mediaKey = contentItem.Type == ContentType.Movie ? "movies" : "shows";
+        var payload = new Dictionary<string, object>
+        {
+            [mediaKey] = new[] { new Dictionary<string, object> { ["ids"] = ids } }
+        };
+
+        using var httpClient = await CreateTraktClient(traktUser);
+        var response = await httpClient.PostAsJsonAsync("/sync/watchlist", payload);
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError(
+                "Failed to add {Title} to Trakt watchlist: Status={Status}, Content={Content}",
+                contentItem.Title,
+                response.StatusCode,
+                content);
+            return false;
+        }
+
+        // Trakt answers 201 even when it could not match the IDs; those are reported under not_found
+        using var result = JsonDocument.Parse(content);
+        if (result.RootElement.TryGetProperty("not_found", out var notFound)
+            && notFound.TryGetProperty(mediaKey, out var notFoundItems)
+            && notFoundItems.ValueKind == JsonValueKind.Array
+            && notFoundItems.GetArrayLength() > 0)
+        {
+            _logger.LogWarning("Trakt could not find {Title} to add it to the watchlist", contentItem.Title);
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// Gets the user's show watchlist.
     /// </summary>
     /// <param name="traktUser">The Trakt user configuration.</param>
