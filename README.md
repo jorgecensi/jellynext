@@ -89,7 +89,7 @@ Features:
 1. **Add Plugin Repository to Jellyfin**
    - Go to: **Dashboard → Plugins → Repositories**
    - Click **"+"** to add a new repository
-   - Enter repository URL: `https://raw.githubusercontent.com/luall0/jellyfin-luall0-plugins/refs/heads/main/manifest.json`
+   - Enter repository URL: `https://raw.githubusercontent.com/jorgecensi/jellynext/main/manifest.json`
    - Click **Save**
 
 2. **Install JellyNext Plugin**
