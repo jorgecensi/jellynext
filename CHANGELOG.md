@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.4.1.0
+
+### Bug Fixes
+
+- **Plugin not listed in the Jellyfin 12 catalogue**: Changed the plugin GUID to `5dd43faa-22d2-4cf5-90fc-f00bc30fd807`
+  - The previous GUID collides with the official OpenLibrary plugin introduced in Jellyfin 12, so Jellyfin merged JellyNext into OpenLibrary's catalogue entry
+  - Existing settings are kept (the configuration file is named after the assembly, not the GUID)
+  - If an older JellyNext version is installed, uninstall it before installing this one
+
 ## v1.4.0.0
 
 ### Breaking Changes

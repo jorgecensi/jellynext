@@ -296,6 +296,7 @@ Implement `IContentProvider` + register in `PluginServiceRegistrator` → automa
 - **SDK pin**: `Jellyfin.Controller`/`Jellyfin.Model` pinned to exactly `12.0.0` (not `12.*`) so the plugin loads on every 12.x server; referencing a newer SDK than the server causes `ReflectionTypeLoadException`. The release workflow derives `targetAbi` from this version
 - **No 10.11 support**: 12.x builds cannot load on 10.11 servers (v1.3.0.0 is the last 10.11 release)
 - **IUserManager**: `Users`/`UsersIds` properties are now `GetUsers()`/`GetUsersIds()` methods
+- **Plugin GUID**: Changed to `5dd43faa-...` in v1.4.1.0 because the original `a4df60c5-...` is also used by the official OpenLibrary plugin (new in 12); Jellyfin merges catalogue entries by GUID, so JellyNext silently disappeared from the plugin list. The GUID lives in `Plugin.cs`, `configPage.html` (`pluginUniqueId`), `manifest.json` and `build.yml` - keep all four in sync
 
 ### Startup Sync Pattern
 `StartupSyncService` (IHostedService) programmatically executes `ContentSyncScheduledTask` via `ITaskManager` - more reliable than `TriggerStartup` (only works on first registration)

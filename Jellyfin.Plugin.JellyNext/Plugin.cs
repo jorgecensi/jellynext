@@ -39,7 +39,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     public override string Name => "JellyNext";
 
     /// <inheritdoc />
-    public override Guid Id => Guid.Parse("a4df60c5-6ab4-412a-8f79-2cab93fb2bc5");
+    public override Guid Id => Guid.Parse("5dd43faa-22d2-4cf5-90fc-f00bc30fd807");
 
     /// <summary>
     /// Gets the current plugin instance.
