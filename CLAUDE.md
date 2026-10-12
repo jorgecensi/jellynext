@@ -26,7 +26,7 @@ Context store for Claude Code sessions. Contains critical architecture decisions
 
 Jellyfin plugin integrating Trakt-powered discovery with per-user virtual libraries and one-click Radarr/Sonarr downloads.
 
-**Tech Stack**: C# / .NET 9.0, Jellyfin Plugin SDK 10.11+, Trakt/TMDB/Radarr/Sonarr APIs
+**Tech Stack**: C# / .NET 10.0, Jellyfin Plugin SDK 12.0+, Trakt/TMDB/Radarr/Sonarr APIs
 
 ## Architecture
 
@@ -289,7 +289,13 @@ Implement `IContentProvider` + register in `PluginServiceRegistrator` → automa
 ### Jellyfin 10.11 API Changes
 - **UserDataManager**: Requires `User` entity (not `Guid`) - inject `IUserManager`, use `GetUserById(Guid)`
 - **Task Triggers**: Use `TaskTriggerInfoType` enum, not string constants (`IntervalTrigger`, `DailyTrigger`, etc.)
-- **Framework**: .NET 9.0 required
+- **Framework**: .NET 9.0 required (10.11 only - see Jellyfin 12 below)
+
+### Jellyfin 12 Compatibility
+- **Framework**: .NET 10.0 required - Jellyfin 12 will not load plugins built for net9.0
+- **SDK pin**: `Jellyfin.Controller`/`Jellyfin.Model` pinned to exactly `12.0.0` (not `12.*`) so the plugin loads on every 12.x server; referencing a newer SDK than the server causes `ReflectionTypeLoadException`. The release workflow derives `targetAbi` from this version
+- **No 10.11 support**: 12.x builds cannot load on 10.11 servers (v1.3.0.0 is the last 10.11 release)
+- **IUserManager**: `Users`/`UsersIds` properties are now `GetUsers()`/`GetUsersIds()` methods
 
 ### Startup Sync Pattern
 `StartupSyncService` (IHostedService) programmatically executes `ContentSyncScheduledTask` via `ITaskManager` - more reliable than `TriggerStartup` (only works on first registration)

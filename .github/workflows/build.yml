@@ -16,7 +16,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Restore dependencies
         run: dotnet restore Jellyfin.Plugin.JellyNext.sln
@@ -41,7 +41,7 @@ jobs:
 
       - name: Package plugin
         run: |
-          cd Jellyfin.Plugin.JellyNext/bin/Release/net9.0
+          cd Jellyfin.Plugin.JellyNext/bin/Release/net10.0
           zip -r ../../../../jellynext-v${{ steps.version.outputs.version }}.zip *
 
       - name: Extract changelog

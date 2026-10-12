@@ -77,8 +77,8 @@ Features:
 ## Installation
 
 ### Prerequisites
-- **Jellyfin 10.11.0 or higher** (required for API compatibility)
-- **.NET 9.0 Runtime** (usually included with Jellyfin)
+- **Jellyfin 12.0 or higher** (required for API compatibility; use JellyNext v1.3.0.0 for Jellyfin 10.11)
+- **.NET 10.0 Runtime** (usually included with Jellyfin)
 - **Trakt Account** (free at [trakt.tv](https://trakt.tv))
 - **(Optional) Download Integration** - Choose one:
   - **Radarr/Sonarr** for direct integration
@@ -515,7 +515,7 @@ dotnet build Jellyfin.Plugin.JellyNext/Jellyfin.Plugin.JellyNext.csproj
 # Build for release
 dotnet build -c Release Jellyfin.Plugin.JellyNext/Jellyfin.Plugin.JellyNext.csproj
 
-# Output will be in: Jellyfin.Plugin.JellyNext/bin/Release/net9.0/
+# Output will be in: Jellyfin.Plugin.JellyNext/bin/Release/net10.0/
 ```
 
 ### Project Structure
@@ -626,7 +626,7 @@ Contributions are welcome! Please:
 - **iOS/tvOS Fix**: Two dummy videos - short (2sec auto-stop) or long (1hr prevents "watched")
 - **Config Validation**: Stub files auto-rebuild when dummy video setting changes
 - **Jellyfin 10.11**: UserDataManager requires `User` entity (not Guid), use `IUserManager.GetUserById()`
-- **Framework**: .NET 9.0 required
+- **Framework**: .NET 10.0 required (Jellyfin 12+)
 
 ## Troubleshooting
 
@@ -635,7 +635,7 @@ Contributions are welcome! Please:
 **"Plugin not appearing after restart"**
 - Verify folder name includes version: `JellyNext_v1.0.0` (not just `JellyNext`)
 - Check Jellyfin logs for plugin load errors: **Dashboard → Logs**
-- Ensure .NET 9.0 is installed (included with Jellyfin 10.11+)
+- Ensure .NET 10.0 is installed (included with Jellyfin 12+)
 
 **"Libraries showing as empty"**
 - Verify you created the Jellyfin libraries pointing to the virtual folders

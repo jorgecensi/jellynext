@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.4.0.0
+
+### Breaking Changes
+
+- **Jellyfin 12 required**: This release targets Jellyfin 12.0+ and no longer loads on Jellyfin 10.11. Stay on v1.3.0.0 if you are still running 10.11
+
+### Improvements
+
+- **Jellyfin 12 Compatibility**: Retargeted the plugin to .NET 10.0 and the Jellyfin 12 SDK
+  - Changed `Jellyfin.Controller` and `Jellyfin.Model` dependencies from `10.11.0` to `12.0.0` (pinned to work across all 12.x releases)
+  - Updated build pipeline and debug environment to .NET 10.0
+
 ## v1.3.0.0
 
 ### Features
